@@ -73,7 +73,7 @@ const localResponses = [
   {
     keywords: ["prix", "tarif", "coût", "combien", "cher"],
     response:
-      "Nos tarifs varient selon le type de bateau et la durée de location. Les prix commencent à partir de 150€ pour 4 heures sur un petit bateau et peuvent aller jusqu'à 600€ pour une journée complète sur un yacht luxueux. Les tarifs weekend sont légèrement plus élevés.",
+      "Nos tarifs varient selon le type de bateau et la durée de location. Les prix commencent à partir de 150$ pour 4 heures sur un petit bateau et peuvent aller jusqu'à 600$ pour une journée complète sur un yacht luxueux. Les tarifs weekend sont légèrement plus élevés.",
     suggestions: ["Prix pour une journée", "Différence de prix weekend/semaine", "Y a-t-il des réductions ?"],
     filter: null,
   },
