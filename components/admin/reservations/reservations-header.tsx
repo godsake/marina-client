@@ -5,13 +5,18 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { DatePickerWithRange } from "@/components/ui/date-range-picker"
 import { Download, Plus, RefreshCw, Search } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 
 export function ReservationsHeader() {
   const [isLoading, setIsLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleRefresh = () => {
     setIsLoading(true)
@@ -19,6 +24,17 @@ export function ReservationsHeader() {
     setTimeout(() => {
       setIsLoading(false)
     }, 1000)
+  }
+
+  // Simple version for server-side rendering
+  if (!mounted) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-2xl font-bold tracking-tight">Gestion des Réservations</h1>
+        </div>
+      </div>
+    )
   }
 
   return (

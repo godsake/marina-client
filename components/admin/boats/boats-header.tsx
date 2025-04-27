@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Download, Plus, RefreshCw, Search } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 
 export function BoatsHeader() {
@@ -12,6 +12,11 @@ export function BoatsHeader() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterStatus, setFilterStatus] = useState("all")
   const [filterType, setFilterType] = useState("all")
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const handleRefresh = () => {
     setIsLoading(true)
@@ -19,6 +24,48 @@ export function BoatsHeader() {
     setTimeout(() => {
       setIsLoading(false)
     }, 1000)
+  }
+
+  // Simple version for server-side rendering
+  if (!mounted) {
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <h1 className="text-2xl font-bold tracking-tight">Gestion des Bateaux</h1>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" disabled>
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Actualiser
+            </Button>
+            <Button variant="outline" size="sm" disabled>
+              <Download className="mr-2 h-4 w-4" />
+              Exporter
+            </Button>
+            <Button size="sm" disabled>
+              <Plus className="mr-2 h-4 w-4" />
+              Ajouter un bateau
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <div className="relative flex-1">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input type="search" placeholder="Rechercher un bateau..." className="pl-8" disabled />
+          </div>
+          <Select disabled>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Statut" />
+            </SelectTrigger>
+          </Select>
+          <Select disabled>
+            <SelectTrigger className="w-full sm:w-[180px]">
+              <SelectValue placeholder="Type" />
+            </SelectTrigger>
+          </Select>
+        </div>
+      </div>
+    )
   }
 
   return (

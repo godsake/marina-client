@@ -47,9 +47,17 @@ export function BookingForm({ boat }: BookingFormProps) {
   const [showTimeSlotError, setShowTimeSlotError] = useState(false)
   const [availableMonths, setAvailableMonths] = useState<MonthOption[]>([])
   const [availableDatesForMonth, setAvailableDatesForMonth] = useState<string[]>([])
+  const [mounted, setMounted] = useState(false)
+
+  // Set mounted state on client side
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Get available dates and organize them by month
   useEffect(() => {
+    if (!mounted) return
+
     const dates = boat.availability.map((a) => a.date)
     const monthsMap = new Map<string, { year: number; month: number; dates: string[] }>()
 
@@ -88,11 +96,11 @@ export function BookingForm({ boat }: BookingFormProps) {
       })
 
     setAvailableMonths(monthOptions)
-  }, [boat.availability])
+  }, [boat.availability, mounted])
 
   // Update available dates when month changes
   useEffect(() => {
-    if (!selectedMonth) {
+    if (!mounted || !selectedMonth) {
       setAvailableDatesForMonth([])
       setSelectedDate("")
       return
@@ -109,7 +117,7 @@ export function BookingForm({ boat }: BookingFormProps) {
 
     setAvailableDatesForMonth(datesInSelectedMonth)
     setSelectedDate("")
-  }, [selectedMonth, boat.availability])
+  }, [selectedMonth, boat.availability, mounted])
 
   // Determine if it's a weekend
   const isWeekend = (dateString: string) => {
@@ -193,8 +201,9 @@ export function BookingForm({ boat }: BookingFormProps) {
 
   // Update time slots when date or duration changes
   useEffect(() => {
+    if (!mounted) return
     generateTimeSlots(selectedDate, selectedDuration)
-  }, [selectedDate, selectedDuration])
+  }, [selectedDate, selectedDuration, mounted])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -267,6 +276,17 @@ export function BookingForm({ boat }: BookingFormProps) {
       *
     </span>
   )
+
+  // Simple version for server-side rendering
+  if (!mounted) {
+    return (
+      <div className="space-y-4 animate-pulse">
+        <div className="h-8 w-full bg-gray-200 rounded"></div>
+        <div className="h-32 w-full bg-gray-200 rounded"></div>
+        <div className="h-8 w-full bg-gray-200 rounded"></div>
+      </div>
+    )
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">

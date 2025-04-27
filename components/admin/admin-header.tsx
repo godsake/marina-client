@@ -16,9 +16,10 @@ import {
 import { Bell, Search, Plus } from "lucide-react"
 
 export function AdminHeader() {
+  // Initialize with empty string to ensure it's always controlled
   const [searchQuery, setSearchQuery] = useState("")
-  const pathname = usePathname() || ""
   const [mounted, setMounted] = useState(false)
+  const pathname = usePathname() || ""
 
   useEffect(() => {
     setMounted(true)
