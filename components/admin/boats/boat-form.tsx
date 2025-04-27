@@ -12,8 +12,9 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Loader2, Save, ArrowLeft, Trash2 } from "lucide-react"
+import { Loader2, Save, ArrowLeft, Trash2, ImageIcon } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
+import Image from "next/image"
 
 const boatFormSchema = z.object({
   name: z.string().min(2, {
@@ -56,6 +57,8 @@ export function BoatForm({ boatId }: BoatFormProps) {
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imageError, setImageError] = useState(false)
 
   const form = useForm<z.infer<typeof boatFormSchema>>({
     resolver: zodResolver(boatFormSchema),
@@ -65,7 +68,7 @@ export function BoatForm({ boatId }: BoatFormProps) {
       description: "",
       capacity: 1,
       status: "available",
-      image: "",
+      image: "/lakeside-rowboat.png",
       price4h: 0,
       price6h: 0,
       price8h: 0,
@@ -73,6 +76,15 @@ export function BoatForm({ boatId }: BoatFormProps) {
       nextMaintenance: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
     },
   })
+
+  // Mettre à jour l'aperçu de l'image lorsque l'URL change
+  useEffect(() => {
+    const imageUrl = form.watch("image")
+    if (imageUrl) {
+      setImagePreview(imageUrl)
+      setImageError(false)
+    }
+  }, [form.watch("image")])
 
   useEffect(() => {
     if (boatId) {
@@ -109,6 +121,7 @@ export function BoatForm({ boatId }: BoatFormProps) {
           nextMaintenance: boatData.nextMaintenance,
         })
 
+        setImagePreview(boatData.image)
         setIsLoading(false)
       }, 1000)
     }
@@ -166,6 +179,12 @@ export function BoatForm({ boatId }: BoatFormProps) {
     } finally {
       setIsDeleting(false)
     }
+  }
+
+  const handleImageError = () => {
+    setImageError(true)
+    // Utiliser une image de placeholder en cas d'erreur
+    setImagePreview("/lakeside-rowboat.png")
   }
 
   return (
@@ -296,6 +315,26 @@ export function BoatForm({ boatId }: BoatFormProps) {
                         </FormControl>
                         <FormDescription>URL de l'image du bateau</FormDescription>
                         <FormMessage />
+                        <div className="mt-2">
+                          <div className="relative h-40 w-full overflow-hidden rounded-md border bg-gray-100">
+                            {imagePreview && !imageError ? (
+                              <Image
+                                src={imagePreview || "/placeholder.svg"}
+                                alt="Aperçu du bateau"
+                                fill
+                                className="object-cover"
+                                onError={handleImageError}
+                              />
+                            ) : (
+                              <div className="flex h-full w-full items-center justify-center">
+                                <div className="flex flex-col items-center text-gray-400">
+                                  <ImageIcon className="h-10 w-10" />
+                                  <span className="mt-2 text-sm">Aperçu non disponible</span>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </FormItem>
                     )}
                   />

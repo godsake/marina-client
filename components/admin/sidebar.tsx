@@ -202,7 +202,7 @@ export function Sidebar() {
 
       <div
         className={cn(
-          "fixed inset-y-0 left-0 z-50 w-[280px] bg-background border-r transform transition-transform duration-200 ease-in-out md:translate-x-0",
+          "fixed inset-y-0 left-0 z-50 w-[240px] bg-background border-r transform transition-transform duration-200 ease-in-out md:translate-x-0 md:relative md:flex-shrink-0",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
@@ -216,7 +216,7 @@ export function Sidebar() {
           </Button>
         </div>
         <ScrollArea className="h-[calc(100vh-4rem)]">
-          <div className="px-3 py-2">
+          <div className="px-2 py-2">
             {sidebarItems.map((item, index) => (
               <SidebarItem
                 key={index}
