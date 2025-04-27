@@ -166,7 +166,7 @@ export function ReservationsList() {
                 <TableCell>{new Date(reservation.date).toLocaleDateString("fr-FR")}</TableCell>
                 <TableCell>{reservation.time}</TableCell>
                 <TableCell>{getStatusBadge(reservation.status)}</TableCell>
-                <TableCell className="text-right">{reservation.amount} €</TableCell>
+                <TableCell className="text-right">{reservation.amount} $</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -258,7 +258,7 @@ export function ReservationsList() {
                   <div>
                     {new Date(reservation.date).toLocaleDateString("fr-FR")} • {reservation.time}
                   </div>
-                  <div className="font-medium">{reservation.amount} €</div>
+                  <div className="font-medium">{reservation.amount} $</div>
                 </div>
                 <div className="flex items-center gap-2">
                   {getStatusIcon(reservation.status)}

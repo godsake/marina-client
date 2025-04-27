@@ -154,7 +154,7 @@ export function RecentReservations({ showAll = false }: RecentReservationsProps)
                 <TableCell>{new Date(reservation.date).toLocaleDateString("fr-FR")}</TableCell>
                 <TableCell>{reservation.time}</TableCell>
                 <TableCell>{getStatusBadge(reservation.status)}</TableCell>
-                <TableCell className="text-right">{reservation.amount} €</TableCell>
+                <TableCell className="text-right">{reservation.amount} $</TableCell>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
