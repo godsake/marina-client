@@ -5,6 +5,9 @@ import { RecentReservations } from "@/components/admin/dashboard/recent-reservat
 import { BoatStatus } from "@/components/admin/dashboard/boat-status"
 import { DashboardHeader } from "@/components/admin/dashboard/header"
 
+// Marquer cette page comme dynamique pour éviter les erreurs de rendu statique
+export const dynamic = "force-dynamic"
+
 export default function AdminDashboard() {
   return (
     <div className="flex flex-col gap-5">

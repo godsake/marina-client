@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
 interface DatePickerWithRangeProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
@@ -20,6 +21,9 @@ export function DatePickerWithRange({ className }: DatePickerWithRangeProps) {
     from: new Date(),
     to: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
   })
+
+  // Utiliser un hook personnalisé pour détecter la taille de l'écran côté client
+  const isDesktop = useMediaQuery("(min-width: 768px)")
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -54,7 +58,7 @@ export function DatePickerWithRange({ className }: DatePickerWithRangeProps) {
             defaultMonth={date?.from}
             selected={date}
             onSelect={setDate}
-            numberOfMonths={window.innerWidth < 768 ? 1 : 2}
+            numberOfMonths={isDesktop ? 2 : 1}
             locale={fr}
           />
         </PopoverContent>

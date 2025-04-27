@@ -3,8 +3,10 @@ import type { Boat } from "@/types/boat"
 // Function to fetch boats from the API
 export async function getBoats(): Promise<Boat[]> {
   try {
+    // Utilisation de next: { revalidate: 3600 } au lieu de cache: "no-store"
+    // pour permettre le rendu statique avec revalidation toutes les heures
     const response = await fetch("https://n8n.srv798586.hstgr.cloud/webhook/get-boats", {
-      cache: "no-store", // Disable caching to always get fresh data
+      next: { revalidate: 3600 }, // Revalidate every hour
     })
 
     if (!response.ok) {
