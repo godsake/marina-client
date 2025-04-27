@@ -17,7 +17,7 @@ interface AdminContextType {
 const AdminContext = createContext<AdminContextType | undefined>(undefined)
 
 export function AdminProvider({ children }: { children: ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [user, setUser] = useState<AdminContextType["user"]>({
     name: "Admin User",
     email: "admin@marina.com",

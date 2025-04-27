@@ -64,7 +64,7 @@ function SidebarItem({ title, icon, href, items, isActive }: SidebarItemProps) {
           <Button
             variant="ghost"
             className={cn(
-              "w-full justify-between font-normal",
+              "w-full justify-between font-normal pr-2",
               isMainActive ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground",
             )}
             onClick={() => setExpanded(!expanded)}
@@ -73,7 +73,7 @@ function SidebarItem({ title, icon, href, items, isActive }: SidebarItemProps) {
               {icon}
               {title}
             </span>
-            {expanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            <span className="flex-shrink-0">{expanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}</span>
           </Button>
           {expanded && items && (
             <div className="ml-6 space-y-1 border-l pl-2">
@@ -205,6 +205,7 @@ export function Sidebar() {
           "fixed inset-y-0 left-0 z-50 w-[240px] bg-background border-r transform transition-transform duration-200 ease-in-out md:translate-x-0 md:relative md:flex-shrink-0",
           isOpen ? "translate-x-0" : "-translate-x-full",
         )}
+        style={{ paddingRight: "0" }}
       >
         <div className="flex h-16 items-center justify-between px-4 border-b">
           <Link href="/admin" className="flex items-center gap-2 font-semibold text-lg">
@@ -216,7 +217,7 @@ export function Sidebar() {
           </Button>
         </div>
         <ScrollArea className="h-[calc(100vh-4rem)]">
-          <div className="px-2 py-2">
+          <div className="py-2">
             {sidebarItems.map((item, index) => (
               <SidebarItem
                 key={index}
