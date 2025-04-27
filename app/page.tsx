@@ -12,7 +12,7 @@ export default async function Home() {
   const boatsData = boats.length > 0 ? boats : fallbackBoats
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="p-4">
         <div className="mb-4 text-center">
           <div className="inline-flex items-center justify-center mb-2">

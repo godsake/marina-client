@@ -18,8 +18,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+      </head>
       <body className={inter.className}>
-        <div className="max-w-md mx-auto">{children}</div>
+        <div className="w-full max-w-md mx-auto sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-4xl 2xl:max-w-6xl">
+          {children}
+        </div>
       </body>
     </html>
   )

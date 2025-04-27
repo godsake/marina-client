@@ -75,7 +75,7 @@ export default function BoatPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="p-4">
         <Button
           variant="ghost"
@@ -105,12 +105,15 @@ export default function BoatPage({ params }: { params: { id: string } }) {
         <div className="mb-4">
           <div className="bg-white rounded-lg shadow-sm p-3 mb-4 border border-ocean-light">
             <h2 className="text-base font-bold mb-2 text-ocean-dark">Description</h2>
-            <div className="relative">
+            <div className="relative md:flex md:gap-4">
               {boat.secondary_image_url && (
-                <div className="relative">
+                <div className="relative md:w-1/3 lg:w-1/4">
                   {/* Conteneur pour l'image avec clic uniquement */}
-                  <div className="float-right ml-3 mb-2 h-24 w-32 cursor-pointer" onClick={toggleImageZoom}>
-                    <div className="relative h-24 w-32 rounded-md overflow-hidden">
+                  <div
+                    className="float-right ml-3 mb-2 h-24 w-32 md:float-none md:ml-0 md:h-auto md:w-full cursor-pointer"
+                    onClick={toggleImageZoom}
+                  >
+                    <div className="relative h-24 w-32 md:h-48 md:w-full rounded-md overflow-hidden">
                       <Image
                         src={boat.secondary_image_url || "/placeholder.svg"}
                         alt={`${boat.name} - Vue secondaire`}
@@ -148,7 +151,9 @@ export default function BoatPage({ params }: { params: { id: string } }) {
                   )}
                 </div>
               )}
-              <p className="text-sm text-gray-700">{boat.description}</p>
+              <div className="md:flex-1">
+                <p className="text-sm text-gray-700">{boat.description}</p>
+              </div>
             </div>
           </div>
 
