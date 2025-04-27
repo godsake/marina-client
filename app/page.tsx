@@ -5,11 +5,20 @@ import { BoatListSkeleton } from "@/components/boat-list-skeleton"
 import { Ship, Waves } from "lucide-react"
 
 export default async function Home() {
-  // Fetch boats data from the API
-  const boats = await getBoats()
+  // Use a try/catch to handle potential errors with data fetching
+  let boatsData = fallbackBoats
 
-  // Use fallback data if the API returns empty
-  const boatsData = boats.length > 0 ? boats : fallbackBoats
+  try {
+    // Fetch boats data from the API
+    const boats = await getBoats()
+    // Use fallback data if the API returns empty
+    if (boats && boats.length > 0) {
+      boatsData = boats
+    }
+  } catch (error) {
+    console.error("Error fetching boats:", error)
+    // Fallback data is already assigned
+  }
 
   return (
     <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden">

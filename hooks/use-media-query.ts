@@ -3,27 +3,30 @@
 import { useState, useEffect } from "react"
 
 export function useMediaQuery(query: string): boolean {
-  // Par défaut, supposons que nous sommes sur un appareil mobile
+  // Default to false to avoid hydration mismatch
   const [matches, setMatches] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Vérifier si window est défini (côté client uniquement)
+    setMounted(true)
+    // Check if window is defined (client-side only)
     if (typeof window !== "undefined") {
       const media = window.matchMedia(query)
 
-      // Définir l'état initial
+      // Set initial state
       setMatches(media.matches)
 
-      // Définir un écouteur pour les changements
+      // Define listener for changes
       const listener = () => setMatches(media.matches)
 
-      // Ajouter l'écouteur
+      // Add listener
       media.addEventListener("change", listener)
 
-      // Nettoyer l'écouteur
+      // Clean up listener
       return () => media.removeEventListener("change", listener)
     }
   }, [query])
 
-  return matches
+  // Return false during SSR to avoid hydration mismatch
+  return mounted ? matches : false
 }

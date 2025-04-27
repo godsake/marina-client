@@ -15,35 +15,61 @@ export default function BoatPage({ params }: { params: { id: string } }) {
   const [boat, setBoat] = useState<Boat | null>(null)
   const [loading, setLoading] = useState(true)
   const [isImageZoomed, setIsImageZoomed] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+
     async function fetchBoat() {
       try {
+        setLoading(true)
+        // First check fallback data for faster initial load
+        const fallbackBoat = fallbackBoats.find((b) => b.id === params.id)
+        if (fallbackBoat) {
+          setBoat(fallbackBoat)
+          setLoading(false)
+        }
+
+        // Then try to get from API
         const boats = await getBoats()
         const foundBoat = boats.find((b) => b.id === params.id)
 
         if (foundBoat) {
           setBoat(foundBoat)
-        } else {
-          // Try to find in fallback data if not found in API
+        } else if (!fallbackBoat) {
+          // If not found in API and no fallback was set
           const fallbackBoat = fallbackBoats.find((b) => b.id === params.id)
           setBoat(fallbackBoat || null)
         }
       } catch (error) {
         console.error("Error fetching boat details:", error)
-        // Try fallback data
-        const fallbackBoat = fallbackBoats.find((b) => b.id === params.id)
-        setBoat(fallbackBoat || null)
+        // If we haven't set a boat yet, try fallback
+        if (!boat) {
+          const fallbackBoat = fallbackBoats.find((b) => b.id === params.id)
+          setBoat(fallbackBoat || null)
+        }
       } finally {
         setLoading(false)
       }
     }
 
-    fetchBoat()
-  }, [params.id])
+    if (mounted) {
+      fetchBoat()
+    }
+  }, [params.id, mounted])
 
   const toggleImageZoom = () => {
     setIsImageZoomed(!isImageZoomed)
+  }
+
+  // Simple loading state for server-side rendering
+  if (!mounted) {
+    return (
+      <div className="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden p-4">
+        <div className="h-6 w-24 animate-pulse rounded bg-ocean-light mb-3"></div>
+        <div className="h-48 w-full animate-pulse rounded-lg bg-ocean-light mb-3"></div>
+      </div>
+    )
   }
 
   if (loading) {

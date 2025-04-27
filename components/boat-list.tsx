@@ -11,10 +11,19 @@ interface BoatListProps {
 
 export function BoatList({ boats }: BoatListProps) {
   const [searchTerm, setSearchTerm] = useState("")
-  const [filteredBoats, setFilteredBoats] = useState<Boat[]>(boats)
+  const [filteredBoats, setFilteredBoats] = useState<Boat[]>([])
+  const [mounted, setMounted] = useState(false)
 
-  // Update filtered boats when search term or boats prop changes
+  // Set mounted state on client side
   useEffect(() => {
+    setMounted(true)
+    setFilteredBoats(boats)
+  }, [boats])
+
+  // Update filtered boats when search term changes
+  useEffect(() => {
+    if (!mounted) return
+
     const filtered = boats.filter((boat) => {
       return (
         boat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -23,7 +32,23 @@ export function BoatList({ boats }: BoatListProps) {
       )
     })
     setFilteredBoats(filtered)
-  }, [searchTerm, boats])
+  }, [searchTerm, boats, mounted])
+
+  // Avoid hydration mismatch by rendering a simpler version on server
+  if (!mounted) {
+    return (
+      <div>
+        <div className="mb-3">
+          <Input type="search" placeholder="Rechercher un bateau..." className="h-9 text-sm" disabled />
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {boats.map((boat) => (
+            <BoatCard key={boat.id} boat={boat} />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div>
