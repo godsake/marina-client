@@ -501,7 +501,7 @@ export function BoatList({ boats }: BoatListProps) {
               <TooltipTrigger asChild>
                 <Button
                   onClick={() => setIsChatVisible(true)}
-                  className="h-12 w-12 rounded-full shadow-lg bg-ocean-dark hover:bg-ocean-dark/90"
+                  className="h-12 w-12 rounded-full shadow-lg bg-aqua-light hover:bg-aqua-light/90"
                 >
                   <Ship className="h-5 w-5 text-white" />
                 </Button>
@@ -518,9 +518,9 @@ export function BoatList({ boats }: BoatListProps) {
       {isChatVisible && (
         <div className="fixed bottom-4 right-4 z-50 w-[calc(100%-2rem)] max-w-[24rem]">
           <div className="border rounded-lg shadow-lg bg-white overflow-hidden">
-            <div className="flex justify-between items-center px-3 py-2 border-b">
-              <h3 className="text-sm font-medium text-ocean-dark flex items-center">
-                <Ship className="h-4 w-4 mr-2 text-ocean-dark" />
+            <div className="flex justify-between items-center px-3 py-2 border-b bg-aqua-light text-white">
+              <h3 className="text-sm font-medium flex items-center">
+                <Ship className="h-4 w-4 mr-2 text-white" />
                 Assistant de recherche
               </h3>
               <div className="flex items-center gap-2">
@@ -561,7 +561,7 @@ export function BoatList({ boats }: BoatListProps) {
                     className={`max-w-[80%] p-2 rounded-lg ${
                       msg.role === "user"
                         ? "bg-ocean-light text-white self-end"
-                        : "bg-gray-100 text-gray-800 self-start"
+                        : "bg-aqua-light/20 text-gray-800 self-start"
                     }`}
                   >
                     {msg.content}
@@ -609,7 +609,7 @@ export function BoatList({ boats }: BoatListProps) {
                           key={i}
                           variant="outline"
                           size="sm"
-                          className="h-7 text-xs bg-ocean-light/5 border-ocean-light/30 text-ocean-dark hover:bg-ocean-light/10"
+                          className="h-7 text-xs bg-aqua-light/10 border-aqua-light/30 text-aqua-dark hover:bg-aqua-light/20"
                           onClick={() => handleSuggestionClick(suggestion)}
                         >
                           {suggestion}
@@ -647,7 +647,7 @@ export function BoatList({ boats }: BoatListProps) {
               <Button
                 type="button"
                 size="sm"
-                className="bg-ocean-dark hover:bg-ocean-dark/90"
+                className="bg-aqua-light hover:bg-aqua-light/90"
                 onClick={handleSendMessage}
                 disabled={isLoading || !chatInput.trim()}
               >
