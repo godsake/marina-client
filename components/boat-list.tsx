@@ -516,7 +516,7 @@ export function BoatList({ boats }: BoatListProps) {
 
       {/* Chatbox qui apparaît à la demande */}
       {isChatVisible && (
-        <div className="fixed bottom-4 right-4 z-50 w-80 md:w-96">
+        <div className="fixed bottom-4 right-4 z-50 w-[calc(100%-2rem)] max-w-[24rem]">
           <div className="border rounded-lg shadow-lg bg-white overflow-hidden">
             <div className="flex justify-between items-center px-3 py-2 border-b">
               <h3 className="text-sm font-medium text-ocean-dark flex items-center">

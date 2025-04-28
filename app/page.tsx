@@ -21,7 +21,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
+    <div className="w-full bg-white shadow-lg rounded-lg overflow-hidden px-2 sm:px-4">
       <div className="p-4">
         <div className="mb-4 text-center">
           <div className="inline-flex items-center justify-center mb-2">

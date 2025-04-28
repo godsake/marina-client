@@ -14,7 +14,7 @@ export function BoatCard({ boat }: BoatCardProps) {
   const lowestPrice = boat.pricing.weekday["4h"]
 
   return (
-    <div className="group overflow-hidden rounded-lg border-2 border-ocean-light bg-white shadow-sm transition-all hover:shadow-md hover:shadow-ocean-light/20 hover:-translate-y-1">
+    <div className="group overflow-hidden rounded-lg border-2 border-ocean-light bg-white shadow-sm transition-all hover:shadow-md hover:shadow-ocean-light/20 hover:-translate-y-1 w-full">
       <div className="flex h-full flex-col">
         <Link href={`/bateaux/${boat.id}`} className="relative h-36 w-full overflow-hidden">
           <Image
