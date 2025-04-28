@@ -6,7 +6,7 @@ import { useState, useEffect, useRef } from "react"
 import { BoatCard } from "@/components/boat-card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Send, RefreshCw, ThumbsUp, ThumbsDown, Ship, Users, Clock, CreditCard, Info } from "lucide-react"
+import { Send, RefreshCw, ThumbsUp, ThumbsDown, Ship, X } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import type { Boat } from "@/types/boat"
@@ -197,6 +197,7 @@ export function BoatList({ boats }: BoatListProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [conversationContext, setConversationContext] = useState<string[]>([])
   const [activeFilters, setActiveFilters] = useState<string[]>([])
+  const [isChatVisible, setIsChatVisible] = useState(false)
   const chatContainerRef = useRef<HTMLDivElement>(null)
 
   // Set mounted state on client side
@@ -492,187 +493,190 @@ export function BoatList({ boats }: BoatListProps) {
 
   return (
     <div>
-      <div className="mb-3">
-        <div className="border rounded-lg shadow-sm bg-white overflow-hidden">
-          <div className="flex justify-between items-center px-3 py-2 border-b">
-            <h3 className="text-sm font-medium text-ocean-dark flex items-center">
-              <Ship className="h-4 w-4 mr-2 text-ocean-dark" />
-              Assistant de recherche
-            </h3>
-            <div className="flex items-center gap-2">
-              {activeFilters.length > 0 && (
-                <div className="flex flex-wrap gap-1 mr-2">
-                  {activeFilters.map((filter, index) => (
-                    <Badge
-                      key={index}
-                      variant="outline"
-                      className="text-xs bg-ocean-light/10 text-ocean-dark border-ocean-light"
-                    >
-                      {filter}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant="ghost" size="sm" onClick={resetFilters} className="h-7 text-xs">
-                      <RefreshCw className="h-3 w-3" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Réinitialiser les filtres</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          </div>
-          <div ref={chatContainerRef} className="h-[250px] p-3 overflow-y-auto flex flex-col gap-2">
-            {messages.map((msg, index) => (
-              <div key={index} className="flex flex-col">
-                <div
-                  className={`max-w-[80%] p-2 rounded-lg ${
-                    msg.role === "user" ? "bg-ocean-light text-white self-end" : "bg-gray-100 text-gray-800 self-start"
-                  }`}
+      {/* Bouton flottant pour ouvrir le chatbox */}
+      {!isChatVisible && (
+        <div className="fixed bottom-4 right-4 z-50">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => setIsChatVisible(true)}
+                  className="h-12 w-12 rounded-full shadow-lg bg-ocean-dark hover:bg-ocean-dark/90"
                 >
-                  {msg.content}
+                  <Ship className="h-5 w-5 text-white" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Ouvrir l'assistant de recherche</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      )}
 
-                  {/* Afficher le nombre de bateaux filtrés si disponible */}
-                  {msg.filteredBoats && (
-                    <div className="mt-1 text-xs opacity-80">{msg.filteredBoats.length} bateau(s) trouvé(s)</div>
-                  )}
-                </div>
-
-                {/* Boutons de feedback pour les messages de l'assistant */}
-                {msg.role === "assistant" && !msg.feedback && (
-                  <div className="self-start flex gap-1 mt-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0"
-                      onClick={() => handleFeedback(index, "positive")}
-                    >
-                      <ThumbsUp className="h-3 w-3 text-gray-500 hover:text-green-500" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-6 w-6 p-0"
-                      onClick={() => handleFeedback(index, "negative")}
-                    >
-                      <ThumbsDown className="h-3 w-3 text-gray-500 hover:text-red-500" />
-                    </Button>
-                  </div>
-                )}
-
-                {/* Afficher le feedback s'il existe */}
-                {msg.role === "assistant" && msg.feedback && (
-                  <div className="self-start mt-1 text-xs text-gray-500">
-                    {msg.feedback === "positive" ? "Merci pour votre retour positif!" : "Merci pour votre retour."}
-                  </div>
-                )}
-
-                {/* Suggestions de questions */}
-                {msg.role === "assistant" && msg.suggestions && msg.suggestions.length > 0 && (
-                  <div className="self-start mt-2 flex flex-wrap gap-1">
-                    {msg.suggestions.map((suggestion, i) => (
-                      <Button
-                        key={i}
+      {/* Chatbox qui apparaît à la demande */}
+      {isChatVisible && (
+        <div className="fixed bottom-4 right-4 z-50 w-80 md:w-96">
+          <div className="border rounded-lg shadow-lg bg-white overflow-hidden">
+            <div className="flex justify-between items-center px-3 py-2 border-b">
+              <h3 className="text-sm font-medium text-ocean-dark flex items-center">
+                <Ship className="h-4 w-4 mr-2 text-ocean-dark" />
+                Assistant de recherche
+              </h3>
+              <div className="flex items-center gap-2">
+                {activeFilters.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mr-2">
+                    {activeFilters.map((filter, index) => (
+                      <Badge
+                        key={index}
                         variant="outline"
-                        size="sm"
-                        className="h-7 text-xs bg-ocean-light/5 border-ocean-light/30 text-ocean-dark hover:bg-ocean-light/10"
-                        onClick={() => handleSuggestionClick(suggestion)}
+                        className="text-xs bg-ocean-light/10 text-ocean-dark border-ocean-light"
                       >
-                        {suggestion}
-                      </Button>
+                        {filter}
+                      </Badge>
                     ))}
                   </div>
                 )}
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button variant="ghost" size="sm" onClick={resetFilters} className="h-7 w-7 p-0">
+                        <RefreshCw className="h-3 w-3" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Réinitialiser les filtres</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <Button variant="ghost" size="sm" onClick={() => setIsChatVisible(false)} className="h-7 w-7 p-0">
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
-            ))}
-            {isLoading && (
-              <div className="bg-gray-100 text-gray-800 self-start max-w-[80%] p-2 rounded-lg">
-                <div className="flex gap-1">
-                  <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
+            </div>
+            <div ref={chatContainerRef} className="h-[300px] p-3 overflow-y-auto flex flex-col gap-2">
+              {messages.map((msg, index) => (
+                <div key={index} className="flex flex-col">
                   <div
-                    className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                    style={{ animationDelay: "0.2s" }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
-                    style={{ animationDelay: "0.4s" }}
-                  ></div>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="border-t p-2 flex gap-2">
-            <Input
-              type="text"
-              placeholder="Posez une question sur nos bateaux..."
-              className="h-9 text-sm"
-              value={chatInput}
-              onChange={(e) => setChatInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-            />
-            <Button
-              type="button"
-              size="sm"
-              className="bg-ocean-dark hover:bg-ocean-dark/90"
-              onClick={handleSendMessage}
-              disabled={isLoading || !chatInput.trim()}
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
+                    className={`max-w-[80%] p-2 rounded-lg ${
+                      msg.role === "user"
+                        ? "bg-ocean-light text-white self-end"
+                        : "bg-gray-100 text-gray-800 self-start"
+                    }`}
+                  >
+                    {msg.content}
 
-      {/* Filtres rapides */}
-      <div className="mb-3 flex flex-wrap gap-2">
-        <div className="text-xs text-gray-500 flex items-center mr-1">
-          <Info className="h-3 w-3 mr-1" /> Filtres rapides:
+                    {/* Afficher le nombre de bateaux filtrés si disponible */}
+                    {msg.filteredBoats && (
+                      <div className="mt-1 text-xs opacity-80">{msg.filteredBoats.length} bateau(s) trouvé(s)</div>
+                    )}
+                  </div>
+
+                  {/* Boutons de feedback pour les messages de l'assistant */}
+                  {msg.role === "assistant" && !msg.feedback && (
+                    <div className="self-start flex gap-1 mt-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={() => handleFeedback(index, "positive")}
+                      >
+                        <ThumbsUp className="h-3 w-3 text-gray-500 hover:text-green-500" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-6 w-6 p-0"
+                        onClick={() => handleFeedback(index, "negative")}
+                      >
+                        <ThumbsDown className="h-3 w-3 text-gray-500 hover:text-red-500" />
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Afficher le feedback s'il existe */}
+                  {msg.role === "assistant" && msg.feedback && (
+                    <div className="self-start mt-1 text-xs text-gray-500">
+                      {msg.feedback === "positive" ? "Merci pour votre retour positif!" : "Merci pour votre retour."}
+                    </div>
+                  )}
+
+                  {/* Suggestions de questions */}
+                  {msg.role === "assistant" && msg.suggestions && msg.suggestions.length > 0 && (
+                    <div className="self-start mt-2 flex flex-wrap gap-1">
+                      {msg.suggestions.map((suggestion, i) => (
+                        <Button
+                          key={i}
+                          variant="outline"
+                          size="sm"
+                          className="h-7 text-xs bg-ocean-light/5 border-ocean-light/30 text-ocean-dark hover:bg-ocean-light/10"
+                          onClick={() => handleSuggestionClick(suggestion)}
+                        >
+                          {suggestion}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {isLoading && (
+                <div className="bg-gray-100 text-gray-800 self-start max-w-[80%] p-2 rounded-lg">
+                  <div className="flex gap-1">
+                    <div className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"></div>
+                    <div
+                      className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
+                      style={{ animationDelay: "0.2s" }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 rounded-full bg-gray-400 animate-bounce"
+                      style={{ animationDelay: "0.4s" }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div className="border-t p-2 flex gap-2">
+              <Input
+                type="text"
+                placeholder="Posez une question..."
+                className="h-9 text-sm"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+              />
+              <Button
+                type="button"
+                size="sm"
+                className="bg-ocean-dark hover:bg-ocean-dark/90"
+                onClick={handleSendMessage}
+                disabled={isLoading || !chatInput.trim()}
+              >
+                <Send className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
-        {boatTypes.map((type, index) => (
-          <Button
-            key={index}
-            variant="outline"
-            size="sm"
-            className={`h-7 text-xs ${
-              activeFilters.includes(type)
-                ? "bg-ocean-light text-white border-ocean-light"
-                : "bg-white text-gray-700 hover:bg-ocean-light/10"
-            }`}
-            onClick={() => handleSuggestionClick(`Je cherche un ${type.toLowerCase()}`)}
-          >
-            {type}
+      )}
+
+      {/* Affichage des filtres actifs en haut de la liste des bateaux */}
+      {activeFilters.length > 0 && (
+        <div className="mb-3 flex flex-wrap gap-2 items-center p-2 bg-ocean-light/5 rounded-lg border border-ocean-light/20">
+          <span className="text-xs text-gray-700">Filtres actifs:</span>
+          {activeFilters.map((filter, index) => (
+            <Badge
+              key={index}
+              variant="outline"
+              className="text-xs bg-ocean-light/10 text-ocean-dark border-ocean-light"
+            >
+              {filter}
+            </Badge>
+          ))}
+          <Button variant="ghost" size="sm" onClick={resetFilters} className="h-7 text-xs ml-auto">
+            <RefreshCw className="h-3 w-3 mr-1" />
+            Réinitialiser
           </Button>
-        ))}
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-7 text-xs"
-          onClick={() => handleSuggestionClick("Bateaux pour 6 personnes")}
-        >
-          <Users className="h-3 w-3 mr-1" /> 6+ personnes
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-7 text-xs"
-          onClick={() => handleSuggestionClick("Prix des locations")}
-        >
-          <CreditCard className="h-3 w-3 mr-1" /> Tarifs
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="h-7 text-xs"
-          onClick={() => handleSuggestionClick("Durées disponibles")}
-        >
-          <Clock className="h-3 w-3 mr-1" /> Durées
-        </Button>
-      </div>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredBoats.map((boat) => (
